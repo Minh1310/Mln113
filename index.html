@@ -8,319 +8,460 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Chiến Lược Kiến Tạo: Quyết Định 10 Lượt</title>
         <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #eef4f7;
-        color: #333;
-        margin: 0;
-        padding: 20px;
-    }
-
-    .game-container {
-        max-width: 1200px;
-        margin: auto;
-        background-color: #ffffff;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    h1 {
-        color: #004d40;
-        text-align: center;
-        margin-bottom: 5px;
-        font-weight: 800;
-    }
-
-    /* CSS MỚI: Nhấn mạnh Vai trò và Vùng hoạt động */
-    .subtitle {
-        text-align: center;
-        font-style: italic;
-        color: #444;
-        margin-bottom: 25px;
-        font-size: 1.1em;
-        padding: 5px 0;
-        border-bottom: 2px solid #004d40;
-    }
-
-    #game-map {
-        background-color: #d1e8e2;
-        height: 50px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        text-align: center;
-        line-height: 50px;
-        color: #004d40;
-        font-size: 1.4em;
-        font-weight: bold;
-        box-shadow: 0 4px 10px rgba(0, 77, 64, 0.2);
-    }
-
-    /* Cảnh báo Áp lực */
-    #tension-alert {
-        background-color: #f44336;
-        color: white;
-        text-align: center;
-        padding: 8px;
-        margin-bottom: 15px;
-        border-radius: 6px;
-        font-weight: bold;
-        display: none;
-    }
-
-    /* II. CHỈ SỐ (STATS) */
-    .stats {
-        display: flex;
-        justify-content: space-around;
-        margin-bottom: 30px;
-        padding: 15px;
-        background-color: #e6f4f8;
-        border-radius: 10px;
-        border: 1px solid #cceeff;
-    }
-
-    .stat-item {
-        text-align: center;
-        padding: 5px 10px;
-        flex-grow: 1;
-        border-right: 1px solid #d9d9d9;
-    }
-
-    .stat-item:last-child {
-        border-right: none;
-    }
-
-    .stat-name {
-        font-weight: bold;
-        font-size: 0.9em;
-        color: #00796b;
-        margin-bottom: 5px;
-    }
-
-    .stat-value {
-        font-size: 1.8em;
-        color: #004d40;
-    }
-
-    /* III. BỐI CẢNH & THỬ THÁCH */
-    .challenge-box {
-        background-color: #fff3e0;
-        padding: 25px;
-        border-radius: 10px;
-        border-left: 6px solid #ff9800;
-        margin-bottom: 25px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    .difficulty-tag {
-        float: right;
-        background-color: #ff9800;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 0.9em;
-        font-weight: bold;
-    }
-
-    /* IV. HÀNH ĐỘNG (Thẻ chính sách) */
-    .policy-options {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .policy-card {
-        background-color: #4db6ac;
-        color: white;
-        border: none;
-        padding: 15px;
-        margin: 10px;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.2s;
-        width: 200px;
-        text-align: center;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        position: relative;
-    }
-
-    .policy-card:hover {
-        background-color: #00796b;
-        transform: translateY(-3px);
-    }
-
-    .policy-card:hover .tooltip {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    .policy-selection.disabled .policy-card::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.4);
-        border-radius: 10px;
-        pointer-events: auto;
-    }
-
-    .tooltip {
-        visibility: hidden;
-        width: 150px;
-        background-color: #333;
-        color: #fff;
-        text-align: center;
-        border-radius: 6px;
-        padding: 8px;
-        position: absolute;
-        z-index: 1;
-        bottom: 100%;
-        left: 50%;
-        margin-left: -75px;
-        opacity: 0;
-        transition: opacity 0.3s;
-        font-size: 0.8em;
-        pointer-events: none;
-    }
-
-    /* V. POPUP PHẢN HỒI (MODAL) - THÊM CSS MỚI */
-    #feedback-modal {
-        display: none;
-        /* Ẩn theo mặc định */
-        position: fixed;
-        z-index: 10;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.6);
-        /* Nền tối */
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 30px;
-        border-radius: 12px;
-        width: 80%;
-        max-width: 600px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        animation-name: animatetop;
-        animation-duration: 0.4s;
-        overflow: hidden;
-        z-index: 1000;
-        /* đảm bảo nằm trên cùng */
-    }
-
-    @keyframes animatetop {
-        from {
-            top: -300px;
-            opacity: 0
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef4f7;
+            color: #333;
+            margin: 0;
+            padding: 20px;
         }
 
-        to {
+        .game-container {
+            max-width: 1200px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            color: #004d40;
+            text-align: center;
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+
+        /* CSS MỚI: Nhấn mạnh Vai trò và Vùng hoạt động */
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            color: #444;
+            margin-bottom: 25px;
+            font-size: 1.1em;
+            padding: 5px 0;
+            border-bottom: 2px solid #004d40;
+        }
+
+        #game-map {
+            background-color: #d1e8e2;
+            height: 50px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 50px;
+            color: #004d40;
+            font-size: 1.4em;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 77, 64, 0.2);
+        }
+
+        /* Cảnh báo Áp lực */
+        #tension-alert {
+            background-color: #f44336;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* II. CHỈ SỐ (STATS) */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #e6f4f8;
+            border-radius: 10px;
+            border: 1px solid #cceeff;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 5px 10px;
+            flex-grow: 1;
+            border-right: 1px solid #d9d9d9;
+        }
+
+        .stat-item:last-child {
+            border-right: none;
+        }
+
+        .stat-name {
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #00796b;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            color: #004d40;
+        }
+
+        /* III. BỐI CẢNH & THỬ THÁCH */
+        .challenge-box {
+            background-color: #fff3e0;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 6px solid #ff9800;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .difficulty-tag {
+            float: right;
+            background-color: #ff9800;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        /* IV. HÀNH ĐỘNG (Thẻ chính sách) */
+        .policy-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .policy-card {
+            background-color: #4db6ac;
+            color: white;
+            border: none;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .policy-card:hover {
+            background-color: #00796b;
+            transform: translateY(-3px);
+        }
+
+        .policy-card:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .policy-selection.disabled .policy-card::after {
+            content: '';
+            position: absolute;
             top: 0;
-            opacity: 1
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+            pointer-events: auto;
         }
-    }
 
-    .feedback-box {
-        margin-top: 10px;
-        padding: 20px;
-        border-radius: 8px;
-        font-weight: bold;
-        font-size: 1.1em;
-    }
+        .tooltip {
+            visibility: hidden;
+            width: 150px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -75px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8em;
+            pointer-events: none;
+        }
 
-    .feedback-box strong {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.9em;
-        color: #555;
-        font-weight: normal;
-    }
+        /* V. POPUP PHẢN HỒI (MODAL) - THÊM CSS MỚI */
+        #feedback-modal {
+            display: none;
+            /* Ẩn theo mặc định */
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            /* Nền tối */
+        }
 
-    .feedback-box .impact {
-        font-size: 1.0em;
-        margin-top: 15px;
-        padding: 5px 0;
-        border-top: 1px dashed #ccc;
-    }
+        .modal-content {
+            background-color: #fefefe;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            overflow: hidden;
+            z-index: 1000;
+            /* đảm bảo nằm trên cùng */
+        }
 
-    .positive {
-        background-color: #e8f5e9;
-        color: #388e3c;
-        border-left: 5px solid #4caf50;
-    }
+        @keyframes animatetop {
+            from {
+                top: -300px;
+                opacity: 0
+            }
 
-    .negative {
-        background-color: #ffebee;
-        color: #d32f2f;
-        border-left: 5px solid #f44336;
-    }
+            to {
+                top: 0;
+                opacity: 1
+            }
+        }
 
-    /* Nút tiếp tục trong Modal */
-    .modal-footer {
-        text-align: center;
-        margin-top: 25px;
-    }
+        .feedback-box {
+            margin-top: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
 
-    .modal-next-btn {
-        background-color: #ff9800;
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 8px;
-        font-size: 1.1em;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        font-weight: 600;
-    }
+        .feedback-box strong {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #555;
+            font-weight: normal;
+        }
 
-    .modal-next-btn:hover {
-        background-color: #e68a00;
-    }
+        .feedback-box .impact {
+            font-size: 1.0em;
+            margin-top: 15px;
+            padding: 5px 0;
+            border-top: 1px dashed #ccc;
+        }
 
-    /* VI. ĐIỀU KHIỂN & NÚT NHẠC (Giữ nguyên) */
-    #control-panel {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 30px;
-        min-height: 50px;
-    }
+        .positive {
+            background-color: #e8f5e9;
+            color: #388e3c;
+            border-left: 5px solid #4caf50;
+        }
 
-    .final-result {
-        background-color: #e3f2fd;
-        border-color: #2196f3;
-        padding: 40px;
-        border-radius: 12px;
-        text-align: center;
-        border: 2px solid #90caf9;
-    }
+        .negative {
+            background-color: #ffebee;
+            color: #d32f2f;
+            border-left: 5px solid #f44336;
+        }
 
-    /* CSS cho nút điều khiển nhạc */
-    #music-control-btn {
-        background-color: #004d40;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 8px;
-        font-size: 1em;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        line-height: 1;
-    }
+        /* Nút tiếp tục trong Modal */
+        .modal-footer {
+            text-align: center;
+            margin-top: 25px;
+        }
 
-    #music-control-btn:hover {
-        background-color: #00796b;
-    }
-</style>
+        .modal-next-btn {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 600;
+        }
+
+        .modal-next-btn:hover {
+            background-color: #e68a00;
+        }
+
+        /* VI. ĐIỀU KHIỂN & NÚT NHẠC (Giữ nguyên) */
+        #control-panel {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            min-height: 50px;
+        }
+
+        .final-result {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #90caf9;
+        }
+
+        /* CSS cho nút điều khiển nhạc */
+        #music-control-btn {
+            background-color: #004d40;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            line-height: 1;
+        }
+
+        #music-control-btn:hover {
+            background-color: #00796b;
+        }
+
+
+        /* 1. Đảm bảo Popup cố định (Fixed) và có đệm dọc (Top/Bottom Spacing) */
+        #welcome-modal,
+        #feedback-modal {
+            display: none;
+            position: fixed;
+            /* Rất quan trọng: Giữ cố định trong viewport */
+            z-index: 101;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.65);
+            /* Nền tối hơn */
+
+            /* Hiệu ứng MỜ (BLUR) cho background */
+            backdrop-filter: blur(5px);
+            /* Làm mờ nội dung phía sau */
+            -webkit-backdrop-filter: blur(5px);
+            /* Hỗ trợ trình duyệt Webkit */
+
+            /* Căn giữa bằng Flexbox */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            /* 2. Đảm bảo cách Top/Bottom (Sử dụng padding) */
+            padding: 20px;
+            /* Thêm đệm 20px xung quanh để nội dung không chạm mép */
+            box-sizing: border-box;
+            /* Quan trọng để padding không làm tràn width/height 100% */
+            overflow-y: auto;
+            /* Cho phép cuộn nếu nội dung quá dài (Hiếm xảy ra) */
+        }
+
+        /* Tùy chỉnh nội dung Modal Welcome */
+        #welcome-modal .welcome-container {
+            max-width: 550px;
+            /* Tăng nhẹ để có không gian */
+            padding: 40px;
+            border: 3px solid #004d40;
+            /* Viền nổi bật */
+        }
+
+        /* 3. Tối ưu hóa nội dung modal */
+        .welcome-container {
+            background-color: #fefefe;
+            margin: 0;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            /* Dùng 100% của phần tử cha (đã có padding) */
+            max-width: 550px;
+            min-height: 600px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            /* Shadow nổi bật hơn */
+
+            /* Đảm bảo nội dung không bị Flexbox co lại */
+            flex-shrink: 0;
+
+            /* Hiệu ứng mở đầu sinh động hơn */
+            animation-name: animatescale;
+            animation-duration: 0.5s;
+        }
+
+        .welcome-header h2 {
+            font-size: 2.2em;
+            font-weight: 900;
+            color: #ff9800;
+            /* Màu Cam nổi bật */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .welcome-role {
+            font-size: 1.2em;
+            color: #00796b;
+            font-style: italic;
+            margin-bottom: 25px;
+        }
+
+        .welcome-rules h3 {
+            color: #d32f2f;
+            /* Màu đỏ cho Luật */
+            border-bottom: 2px dashed #ffebee;
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
+
+        .welcome-rules ul {
+            text-align: left;
+            margin-left: 20px;
+            list-style-type: '👉';
+            /* Dùng emoji cho bullet point */
+            padding-left: 10px;
+        }
+
+        .welcome-rules ul li {
+            padding-left: 10px;
+            margin-bottom: 8px;
+        }
+
+        .welcome-goal {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #004d40;
+            /* Nền xanh đậm */
+            color: white;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Nút bắt đầu lớn hơn, thu hút hơn */
+        #welcome-modal .modal-next-btn {
+            padding: 15px 35px;
+            font-size: 1.2em;
+            background-color: #ff5722;
+            /* Màu cam nóng */
+            transition: transform 0.2s;
+        }
+
+        #welcome-modal .modal-next-btn:hover {
+            background-color: #e64a19;
+            transform: scale(1.05);
+        }
+
+        /* Cập nhật Keyframes */
+        @keyframes animatescale {
+            from {
+                transform: scale(0.8);
+                opacity: 0
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -331,253 +472,302 @@
             Trình duyệt của bạn không hỗ trợ thẻ audio. (Bạn cần thay thế bằng file nhạc thực tế)
     </audio>
 
-<div class="game-container">
-        <h1>🇻🇳 CHIẾN LƯỢC KIẾN TẠO: QUYẾT ĐỊNH 10 LƯỢT</h1>
-        <p class="subtitle">Bạn là **Trưởng Ban Chỉ Đạo Vùng**, giải quyết các vấn đề Dân tộc và Tôn giáo (Lượt:
-    <span id="turn-count-subtitle">1/10</span>)
-</p>
-       
-        <div id="tension-alert">🔥 TÌNH HÌNH NỘI BỘ ĐANG CĂNG THẲNG CỰC ĐỘ!</div>
+    <div id="welcome-modal" style="display: none;">
+        <div class="modal-content welcome-container">
+            <div style="text-align: center;">
 
-        <div class="stats">
-            <div class="stat-item">
-    <div class="stat-name">LÒNG DÂN</div><span id="ld-score" class="stat-value">70</span>
-</div>
-            <div class="stat-item">
-    <div class="stat-name">BẢN SẮC VĂN HÓA</div><span id="identity-score" class="stat-value">70</span>
-</div>
-            <div class="stat-item">
-    <div class="stat-name">PHÁT TRIỂN HẠ TẦNG</div><span id="development-score" class="stat-value">50</span>
-</div>
-            <div class="stat-item">
-    <div class="stat-name">CĂNG THẲNG XÃ HỘI</div><span id="tension-score" class="stat-value">10</span>
-</div>
-        </div>
+                <div class="welcome-header">
+                    <h2 style="margin-bottom: 0;">CHIẾN LƯỢC KIẾN TẠO</h2>
+                    <p class="welcome-role">Bạn Là Trưởng Ban Chỉ Đạo Vùng</p>
+                </div>
 
-        <div id="game-map">
-            <span id="current-zone-display">Đang chuẩn bị nhận nhiệm vụ</span>
-        </div>
+                <p>Chào mừng bạn! Hãy sẵn sàng đối mặt với các **Thách thức Dân tộc & Tôn giáo** để củng cố sức mạnh nội
+                    bộ quốc gia.</p>
 
-        <div id="challenge-area">
-        </div>
+                <div class="welcome-rules">
+                    <h3>📜 LUẬT CHƠI & CHỈ SỐ QUAN TRỌNG</h3>
+                    <ul>
+                        <li>Bạn có **10 Lượt Quyết Định** (10 tình huống khó khăn).</li>
+                        <li>Mỗi lượt, bạn phải chọn **1 Chính sách** trong 10 phương án. **Chỉ có 1 là Tối ưu!**</li>
+                        <li>Các chỉ số chính bạn cần quản lý: **Lòng Dân, Bản Sắc, Phát Triển** và **Căng Thẳng Xã
+                            Hội**.</li>
+                        <li>**Áp lực sẽ tăng dần!** (Căng Thẳng tăng 2 điểm mỗi lượt).</li>
+                    </ul>
+                </div>
 
-                <div class="policy-selection" id="policy-buttons">
-            <h3>Chọn Phương án Chiến lược (Chỉ có 1 Chính sách là Tối ưu):</h3>
-            <div class="policy-options">
-            </div>
-        </div>
+                <div class="welcome-goal">
+                    <p>Mục tiêu: Đạt kết quả **Phát Triển & Lòng Dân cao** nhất, đồng thời giữ **Căng Thẳng Xã Hội <
+                            30**!</p>
+                </div>
 
-        <div id="control-panel" style="position: fixed; top: 0; bottom: 0; margin: 20px; height: fit-content ! important;">
-            <button id="music-control-btn" onclick="toggleMusic()">🔊 Bật Nhạc Nền</button>
-                </div>
-</div>
+                <div class="modal-footer">
+                    <button class="modal-next-btn" onclick="startGameModal()">BẮT ĐẦU PHÂN TÍCH VÀ RA QUYẾT ĐỊNH
+                        ➡️</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div id="feedback-modal">
-        <div class="modal-content">
-            <div id="modal-feedback-content">
-                        </div>
-            <div class="modal-footer">
-                <button class="modal-next-btn" onclick="nextTurn()">Tiếp tục Lượt sau ▶️</button>
-            </div>
-        </div>
-</div>
+    <div class="game-container">
+            <h1>CHIẾN LƯỢC KIẾN TẠO: QUYẾT ĐỊNH 10 LƯỢT</h1>
+            <p class="subtitle">Bạn là **Trưởng Ban Chỉ Đạo Vùng**, giải quyết các vấn đề Dân tộc và Tôn giáo (Lượt:
+            <span id="turn-count-subtitle">1/10</span>)
+        </p>
+           
+            <div id="tension-alert">🔥 TÌNH HÌNH NỘI BỘ ĐANG CĂNG THẲNG CỰC ĐỘ!</div>
 
-<script>
-    const MAX_TURNS = 10;
-    let scores = {
-        Ld: 70, // Lòng Dân
-        identity: 70,
-        development: 50,
-        tension: 10,
-        turn: 1,
-        canAct: true
-    };
+            <div class="stats">
+                    <div class="stat-item">
+                <div class="stat-name">LÒNG DÂN</div><span id="ld-score" class="stat-value">70</span>
+            </div>
+                    <div class="stat-item">
+                <div class="stat-name">BẢN SẮC VĂN HÓA</div><span id="identity-score" class="stat-value">70</span>
+            </div>
+                    <div class="stat-item">
+                <div class="stat-name">PHÁT TRIỂN HẠ TẦNG</div><span id="development-score" class="stat-value">50</span>
+            </div>
+                    <div class="stat-item">
+                <div class="stat-name">CĂNG THẲNG XÃ HỘI</div><span id="tension-score" class="stat-value">10</span>
+            </div>
+                </div>
 
-    // Khởi tạo trạng thái nhạc
-    const music = document.getElementById('background-music');
-    const musicBtn = document.getElementById('music-control-btn');
-    const feedbackModal = document.getElementById('feedback-modal');
-    const modalContent = document.getElementById('modal-feedback-content');
+            <div id="game-map">
+                    <span id="current-zone-display">Đang chuẩn bị nhận nhiệm vụ</span>
+                </div>
 
-    // --- Khai báo chính sách Phụ (Được đưa lên đầu để truy cập nhất quán) ---
-    const utilityPolicies = [
-        { id: 'policy_hoan', name: 'Hoãn Quyết Định', desc: 'Cần thêm thời gian nghiên cứu. Chấp nhận tình hình căng thẳng hơn.', hover_impact: 'Lòng Dân ▼▼▼, Căng Thẳng ▲▲▲' },
-        { id: 'policy_luc', name: 'Áp dụng Biện pháp Mạnh', desc: 'Dùng lực lượng an ninh giải tán, bắt giữ đối tượng. Giảm căng thẳng tức thời, nhưng rủi ro cao.', hover_impact: 'Lòng Dân ▼▼▼▼, Căng Thẳng ▼▼' }
-    ];
-    window.utilityPolicies = utilityPolicies; // Gán vào window scope
+            <div id="challenge-area">
+                </div>
 
-    // Hàm điều khiển nhạc
-    function toggleMusic() {
-        if (music.paused) {
-            music.play();
-            musicBtn.textContent = '🔇 Tắt Nhạc Nền';
-        } else {
-            music.pause();
-            musicBtn.textContent = '🔊 Bật Nhạc Nền';
-        }
-    }
+                    <div class="policy-selection" id="policy-buttons">
+                    <h3>Chọn Phương án Chiến lược (Chỉ có 1 Chính sách là Tối ưu):</h3>
+                    <div class="policy-options">
+                        </div>
+                </div>
 
-    // --- LÝ GIẢI CNXH CHO MỖI CHÍNH SÁCH ĐÚNG ---
-    const correct_explanations = {
-        policy_01: "Giải quyết nhu cầu tinh thần, củng cố ý thức dân tộc. Phù hợp với chính sách đại đoàn kết và phát huy giá trị văn hóa dân tộc trong CNXH.",
-        policy_02: "Đảm bảo quyền tự do tín ngưỡng hợp pháp. Việc tạo điều kiện cho tôn giáo hoạt động chính đáng sẽ củng cố lòng tin vào pháp quyền XHCN.",
-        policy_03: "Cắt đứt nguồn gốc mâu thuẫn giai cấp. Xử lý tiêu cực và đảm bảo phân phối vốn công bằng là nguyên tắc cơ bản của kinh tế XHCN.",
-        policy_04: "Bảo vệ lợi ích và sức khỏe nhân dân. Đấu tranh chống mê tín dị đoan là bảo vệ quyền lợi vật chất và tinh thần của quần chúng, củng cố nền tảng văn hóa XHCN.",
-        policy_05: "Bảo tồn bản sắc là bảo tồn sức mạnh nội sinh. Đầu tư vào giáo dục song ngữ là giải pháp lâu dài, phù hợp với chính sách bình đẳng và đoàn kết dân tộc.",
-        policy_06: "Nguyên tắc cao nhất là lợi ích nhân dân. Công khai giải quyết tranh chấp đất đai qua đối thoại đa chiều là thực hiện quyền làm chủ của nhân dân, củng cố pháp luật XHCN.",
-        policy_07: "Chủ động thông tin là bảo vệ chủ quyền. Bác bỏ luận điệu xuyên tạc bằng sự thật quốc tế là đấu tranh chính trị sắc bén, bảo vệ uy tín Nhà nước XHCN.",
-        policy_08: "Hài hòa lợi ích. Thiết lập cơ chế đồng quản lý giúp tận dụng nguồn lực xã hội để phát triển văn hóa trong khi Nhà nước vẫn kiểm soát tính pháp lý và lịch sử.",
-        policy_09: "Mềm dẻo chính trị, cứng rắn pháp lý. Giải quyết tận gốc rễ (kinh tế, an sinh) kết hợp đấu tranh pháp lý với lực lượng cực đoan, thể hiện tính ưu việt của chính sách dân tộc XHCN.",
-        policy_10: "Minh bạch và Nhân văn. Tái định cư nhân văn, công khai, và đảm bảo sinh kế là ưu tiên tuyệt đối khi thực hiện các dự án phát triển kinh tế quốc gia XHCN."
-    };
+            <div id="control-panel"
+            style="position: fixed; top: 0; bottom: 0; margin: 20px; height: fit-content ! important;">
+                    <button id="music-control-btn" onclick="toggleMusic()">🔇 Tắt Nhạc Nền</button>
+                        </div>
+    </div>
 
-    // --- 10 TÌNH HUỐNG VỚI LOGIC ĐIỂM ĐÃ TỐI ƯU ---
-    const all_challenges = [
-        // Lượng cộng giảm, Lượng trừ nếu fail sẽ lớn hơn
-        {
-            id: 1, zone: 'Miền núi phía Bắc (Lào Cai)', difficulty: 1,
-            text: "Một nhóm nghệ nhân Tày đề xuất hợp tác với Sở Văn hóa để phục hồi Lễ hội *Lồng Tồng* bị mai một. Họ yêu cầu 500 triệu đồng kinh phí hỗ trợ và lo ngại Lễ hội sẽ bị 'thương mại hóa' và mất đi ý nghĩa gốc nếu Nhà nước can thiệp sâu.",
-            correct_policy: 'policy_01',
-            effect_success: { Ld: 3, identity: 6, tension: -2 }, // Tăng ít hơn
-            effect_fail_base: { Ld: -6, identity: -8, tension: 5 } // Base fail effect
-        },
+    <div id="feedback-modal">
+            <div class="modal-content">
+                    <div id="modal-feedback-content">
+                                    </div>
+                    <div class="modal-footer">
+                            <button class="modal-next-btn" onclick="nextTurn()">Tiếp tục Lượt sau ▶️</button>
+                        </div>
+                </div>
+    </div>
 
-        {
-            id: 2, zone: 'Đồng bằng Sông Hồng (Nam Định)', difficulty: 2,
-            text: "Giáo xứ X (Công giáo) đã được cấp phép muốn mở rộng khuôn viên để xây nhà Mục vụ do số giáo dân tăng. Tuy nhiên, họ bị vướng mắc vì giá đền bù giải tỏa hành lang an toàn giao thông chưa thỏa đáng, gây khiếu nại kéo dài.",
-            correct_policy: 'policy_02',
-            effect_success: { Ld: 4, development: 2, tension: -4 },
-            effect_fail_base: { Ld: -8, tension: 7 }
-        },
+    <script>
+        const MAX_TURNS = 10;
+        let scores = {
+            Ld: 70, // Lòng Dân
+            identity: 70,
+            development: 50,
+            tension: 10,
+            turn: 1,
+            canAct: true
+        };
 
-        {
-            id: 3, zone: 'Tây Nguyên (Đắk Lắk)', difficulty: 3,
-            text: "50 hộ dân Ê-Đê tố cáo 3 cán bộ tín dụng và địa chính đã 'ăn chặn' vốn vay ưu đãi (50 triệu/hộ) phát triển cây công nghiệp. Vụ việc đang gây bức xúc lớn, đe dọa lòng tin vào chính sách xóa đói giảm nghèo của tỉnh.",
-            correct_policy: 'policy_03',
-            effect_success: { Ld: 5, development: 3, tension: -5 },
-            effect_fail_base: { Ld: -10, tension: 9, development: -2 }
-        },
+        // Khởi tạo trạng thái nhạc
+        const music = document.getElementById('background-music');
+        const musicBtn = document.getElementById('music-control-btn');
+        const feedbackModal = document.getElementById('feedback-modal');
+        const modalContent = document.getElementById('modal-feedback-content');
 
-        {
-            id: 4, zone: 'Miền Trung (Quảng Trị)', difficulty: 4,
-            text: "Tà đạo 'Phúc Lạc' lan truyền trong vùng sâu, khuyến khích tín đồ không tiêm phòng cho con cái và không dùng thuốc Tây. Tình hình dịch bệnh gia tăng, và người dân bị buộc đóng 'lễ vật' tốn kém. Cần can thiệp gấp.",
-            correct_policy: 'policy_04',
-            effect_success: { tension: -6, Ld: 4 },
-            effect_fail_base: { Ld: -8, tension: 10 }
-        },
+        // --- Khai báo chính sách Phụ (Được đưa lên đầu để truy cập nhất quán) ---
+        const utilityPolicies = [
+            { id: 'policy_hoan', name: 'Hoãn Quyết Định', desc: 'Cần thêm thời gian nghiên cứu. Chấp nhận tình hình căng thẳng hơn.', hover_impact: 'Lòng Dân ▼▼▼, Căng Thẳng ▲▲▲' },
+            { id: 'policy_luc', name: 'Áp dụng Biện pháp Mạnh', desc: 'Dùng lực lượng an ninh giải tán, bắt giữ đối tượng. Giảm căng thẳng tức thời, nhưng rủi ro cao.', hover_impact: 'Lòng Dân ▼▼▼▼, Căng Thẳng ▼▼' }
+        ];
+        window.utilityPolicies = utilityPolicies; // Gán vào window scope
 
-        { id: 5, zone: 'Vùng nông thôn Bắc Bộ (Bắc Giang)', difficulty: 5,
-            text: "Khảo sát cho thấy nhiều thanh thiếu niên bỏ học sớm để đi làm xa, khiến mối liên kết giữa cha mẹ và con cái suy yếu, gia tăng bạo lực gia đình và ly hôn. Chính quyền địa phương muốn phục hồi giá trị 'Gia đình văn hóa mới XHCN'.",
-            correct_policy: 'policy_05',
-            effect_success: { identity: 5, Ld: 4, tension: -3 },
-            effect_fail_base: { identity: -8, Ld: -5, tension: 6 }
-        },
-
-        { id: 6, zone: 'Miền Trung (Quảng Nam)', difficulty: 6,
-            text: "Phụ nữ trong các làng nghề truyền thống ít được tham gia quản lý hợp tác xã, dù chiếm hơn 60% lao động. Nhiều ý kiến đề xuất có chính sách nâng cao vai trò phụ nữ và bình đẳng giới trong phát triển kinh tế hộ gia đình.",
-            correct_policy: 'policy_06',
-            effect_success: { development: 4, Ld: 5, tension: -4 },
-            effect_fail_base: { Ld: -8, development: -3, tension: 6 }
-        },
-
-        { id: 7, zone: 'Tây Nguyên (Kon Tum)', difficulty: 7,
-            text: "Một số vùng dân tộc thiểu số xuất hiện trào lưu thanh niên bỏ quê lên thành phố làm thuê, để lại trẻ em và người già không được chăm sóc. Chính quyền cần biện pháp ổn định kinh tế hộ và giữ gìn nếp sống gia đình truyền thống.",
-            correct_policy: 'policy_07',
-            effect_success: { Ld: 6, development: 3, tension: -5 },
-            effect_fail_base: { Ld: -9, tension: 7 }
-        },
-
-        { id: 8, zone: 'Đô thị lớn (Hà Nội)', difficulty: 8,
-            text: "Sự bùng nổ công nghệ và mạng xã hội khiến nhiều gia đình mất gắn kết, trẻ em lệ thuộc vào Internet, xa rời giáo dục đạo đức truyền thống. Cần một chương trình xây dựng 'Gia đình số – Văn hóa số XHCN' phù hợp thời đại.",
-            correct_policy: 'policy_08',
-            effect_success: { Ld: 5, identity: 4, tension: -4 },
-            effect_fail_base: { Ld: -8, identity: -6, tension: 6 }
-        },
-
-        {
-            id: 9, zone: 'Tây Bắc (Điện Biên)', difficulty: 9,
-            text: "Nhóm người Mông bị tổ chức 'Giê Sùa' lôi kéo tuyên truyền về việc ly khai. Nhóm này vũ trang, chiếm giữ một đồn nhỏ của Biên phòng. Cần xử lý khẩn cấp để không tạo tiền lệ xấu và không gây đổ máu.",
-            correct_policy: 'policy_09',
-            effect_success: { Ld: 8, tension: -8, identity: 2 },
-            effect_fail_base: { Ld: -15, tension: 15 }
-        },
-
-        {
-            id: 10, zone: 'Miền Trung (Khu kinh tế ven biển)', difficulty: 10,
-            text: "Dự án Khu kinh tế quốc gia (3000ha) phải thu hồi đất của 500 hộ dân tộc Chăm, bao gồm việc di dời 3 thánh đường Hồi giáo và hàng loạt nghĩa địa. Người dân phản đối, cho rằng việc di dời làm tổn thương tinh thần tôn giáo và bản sắc.",
-            correct_policy: 'policy_10',
-            effect_success: { development: 7, Ld: 6, tension: -7, identity: 1 },
-            effect_fail_base: { development: -5, Ld: -14, tension: 18 }
-        }
-    ];
-
-    // --- 10 CHÍNH SÁCH CỤ THỂ TƯƠNG ỨNG ---
-    const policies = [
-        { id: 'policy_01', name: 'Đồng tài trợ & Kiểm soát chất lượng', desc: 'Nhà nước chia sẻ 70% kinh phí, nhưng thiết lập Ban Giám sát (Cơ quan Văn hóa & Nghệ nhân) để đảm bảo chất lượng, chống thương mại hóa.', hover_impact: 'Lòng Dân ▲▲, Bản Sắc ▲▲▲, Căng Thẳng ▼' },
-        { id: 'policy_02', name: 'Tổ công tác ưu tiên tháo gỡ', desc: 'Thành lập Tổ công tác liên ngành đặc biệt để ưu tiên xử lý hồ sơ, áp dụng khung giá đền bù cao nhất và đề xuất phương án hoán đổi đất hợp lý.', hover_impact: 'Lòng Dân ▲▲▲, Phát Triển ▲, Căng Thẳng ▼▼' },
-        { id: 'policy_03', name: 'Thanh tra đột xuất & Khởi tố', desc: 'Khởi tố và xử lý hình sự cán bộ tham nhũng; tổ chức thanh tra đột xuất và tái cơ cấu ban quản lý vốn vay để trả lại quyền lợi cho người dân.', hover_impact: 'Lòng Dân ▲▲▲, Phát Triển ▲, Căng Thẳng ▼▼' },
-        { id: 'policy_04', name: 'Liên ngành Y tế - An ninh', desc: 'Xử lý nghiêm đối tượng cầm đầu theo pháp luật; phối hợp Y tế và chức sắc tôn giáo chính thống tuyên truyền khoa học về y tế và đấu tranh với mê tín dị đoan.', hover_impact: 'Căng Thẳng ▼▼▼, Lòng Dân ▲▲' },
-        { id: 'policy_05', name: 'Chương trình Gia đình Văn hóa XHCN',
-            desc: 'Phát động phong trào “Gia đình văn hóa – Hạnh phúc – Bình đẳng” với trọng tâm giáo dục đạo đức, phòng chống bạo lực và khôi phục các giá trị truyền thống trong đời sống hiện đại.',
-            hover_impact: 'Bản Sắc ▲▲, Lòng Dân ▲▲, Căng Thẳng ▼' },
-        { id: 'policy_06', name: 'Chiến lược Bình đẳng giới trong Kinh tế hộ gia đình',
-            desc: 'Đưa tiêu chí bình đẳng giới vào xếp hạng Hợp tác xã; ưu tiên tín dụng và đào tạo lãnh đạo cho phụ nữ, khẳng định vai trò “người giữ lửa” trong phát triển kinh tế – xã hội XHCN.',
-            hover_impact: 'Phát Triển ▲▲, Lòng Dân ▲▲, Căng Thẳng ▼' },
-        { id: 'policy_07', name: 'Chính sách Hỗ trợ Lao động Trở về Quê',
-            desc: 'Tạo việc làm tại chỗ, mở lớp dạy nghề cho thanh niên nông thôn; hỗ trợ kinh tế hộ gia đình nhằm gắn kết thế hệ và ổn định cấu trúc gia đình vùng dân tộc thiểu số.',
-            hover_impact: 'Lòng Dân ▲▲▲, Phát Triển ▲, Căng Thẳng ▼▼' },
-        { id: 'policy_08', name: 'Đề án Gia đình số – Văn hóa số XHCN',
-            desc: 'Tổ chức chiến dịch truyền thông và hướng dẫn “Gia đình 4.0” – ứng dụng công nghệ vào gắn kết, giáo dục con cái, và lan tỏa lối sống XHCN trong không gian mạng.',
-            hover_impact: 'Lòng Dân ▲▲, Bản Sắc ▲▲, Căng Thẳng ▼' },{ id: 'policy_09', name: 'Lồng ghép An ninh - An sinh xã hội', desc: 'Thực hiện chính sách an sinh xã hội khẩn cấp (nhà ở, việc làm) để tách đối tượng bị lôi kéo ra khỏi đối tượng cầm đầu; đồng thời sử dụng lực lượng An ninh đấu tranh pháp lý kiên quyết.', hover_impact: 'Lòng Dân ▲▲▲, Căng Thẳng ▼▼▼' },
-        { id: 'policy_10', name: 'Minh bạch Quy trình Tái định cư Nhân văn', desc: 'Công khai toàn bộ quy trình; áp dụng chính sách đền bù cao nhất; xây dựng khu tái định cư mới gần gũi với phong tục Chăm, đảm bảo sinh kế tốt hơn nơi cũ.', hover_impact: 'Phát Triển ▲▲▲, Lòng Dân ▲▲▲, Căng Thẳng ▼▼▼' }
-    ];
-
-
-    function updateScores() {
-        document.getElementById('turn-count-subtitle').textContent = `${scores.turn}/${MAX_TURNS}`;
-        document.getElementById('ld-score').textContent = scores.Ld;
-        document.getElementById('identity-score').textContent = scores.identity;
-        document.getElementById('development-score').textContent = scores.development;
-        document.getElementById('tension-score').textContent = scores.tension;
-
-        // Cập nhật Cảnh báo Áp lực
-        const alertBox = document.getElementById('tension-alert');
-        if (scores.tension >= 70) {
-            alertBox.style.display = 'block';
-            alertBox.style.backgroundColor = '#8c0000'; // Đỏ rất đậm (Nguy hiểm)
-            alertBox.textContent = "🔥🔥 KHỦNG HOẢNG LÒNG TIN VÀ AN NINH TRẬT TỰ! 🔥🔥";
-        } else if (scores.tension >= 50) {
-            alertBox.style.display = 'block';
-            alertBox.style.backgroundColor = '#d32f2f'; // Đỏ
-            alertBox.textContent = "🔥 TÌNH HÌNH NỘI BỘ ĐANG CĂNG THẲNG CỰC ĐỘ! 🔥";
-        } else if (scores.tension >= 30) {
-            alertBox.style.display = 'block';
-            alertBox.style.backgroundColor = '#ff9800'; // Cam
-            alertBox.textContent = "⚠️ Cảnh báo: Áp lực xã hội đang gia tăng nhanh chóng.";
-        } else {
-            alertBox.style.display = 'none';
-        }
-    }
-
-    function startTurn() {
-        if (scores.turn > MAX_TURNS) {
-            displayFinalResult();
-            return;
+        // Hàm điều khiển nhạc
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+                musicBtn.textContent = '🔇 Tắt Nhạc Nền';
+            } else {
+                music.pause();
+                musicBtn.textContent = '🔊 Bật Nhạc Nền';
+            }
         }
 
-        scores.canAct = true;
+        // --- LÝ GIẢI CNXH CHO MỖI CHÍNH SÁCH ĐÚNG ---
+        const correct_explanations = {
+            policy_01: "Giải quyết nhu cầu tinh thần, củng cố ý thức dân tộc. Phù hợp với chính sách đại đoàn kết và phát huy giá trị văn hóa dân tộc trong CNXH.",
+            policy_02: "Đảm bảo quyền tự do tín ngưỡng hợp pháp. Việc tạo điều kiện cho tôn giáo hoạt động chính đáng sẽ củng cố lòng tin vào pháp quyền XHCN.",
+            policy_03: "Cắt đứt nguồn gốc mâu thuẫn giai cấp. Xử lý tiêu cực và đảm bảo phân phối vốn công bằng là nguyên tắc cơ bản của kinh tế XHCN.",
+            policy_04: "Bảo vệ lợi ích và sức khỏe nhân dân. Đấu tranh chống mê tín dị đoan là bảo vệ quyền lợi vật chất và tinh thần của quần chúng, củng cố nền tảng văn hóa XHCN.",
+            policy_05: "Bảo tồn bản sắc là bảo tồn sức mạnh nội sinh. Đầu tư vào giáo dục song ngữ là giải pháp lâu dài, phù hợp với chính sách bình đẳng và đoàn kết dân tộc.",
+            policy_06: "Nguyên tắc cao nhất là lợi ích nhân dân. Công khai giải quyết tranh chấp đất đai qua đối thoại đa chiều là thực hiện quyền làm chủ của nhân dân, củng cố pháp luật XHCN.",
+            policy_07: "Chủ động thông tin là bảo vệ chủ quyền. Bác bỏ luận điệu xuyên tạc bằng sự thật quốc tế là đấu tranh chính trị sắc bén, bảo vệ uy tín Nhà nước XHCN.",
+            policy_08: "Hài hòa lợi ích. Thiết lập cơ chế đồng quản lý giúp tận dụng nguồn lực xã hội để phát triển văn hóa trong khi Nhà nước vẫn kiểm soát tính pháp lý và lịch sử.",
+            policy_09: "Mềm dẻo chính trị, cứng rắn pháp lý. Giải quyết tận gốc rễ (kinh tế, an sinh) kết hợp đấu tranh pháp lý với lực lượng cực đoan, thể hiện tính ưu việt của chính sách dân tộc XHCN.",
+            policy_10: "Minh bạch và Nhân văn. Tái định cư nhân văn, công khai, và đảm bảo sinh kế là ưu tiên tuyệt đối khi thực hiện các dự án phát triển kinh tế quốc gia XHCN."
+        };
 
-        // Áp lực xã hội tăng 2 điểm mỗi lượt (Tăng độ khó)
-        scores.tension += 2;
+        // --- 10 TÌNH HUỐNG VỚI LOGIC ĐIỂM ĐÃ TỐI ƯU ---
+        const all_challenges = [
+            // Lượng cộng giảm, Lượng trừ nếu fail sẽ lớn hơn
+            {
+                id: 1, zone: 'Miền núi phía Bắc (Lào Cai)', difficulty: 1,
+                text: "Một nhóm nghệ nhân Tày đề xuất hợp tác với Sở Văn hóa để phục hồi Lễ hội *Lồng Tồng* bị mai một. Họ yêu cầu 500 triệu đồng kinh phí hỗ trợ và lo ngại Lễ hội sẽ bị 'thương mại hóa' và mất đi ý nghĩa gốc nếu Nhà nước can thiệp sâu.",
+                correct_policy: 'policy_01',
+                effect_success: { Ld: 3, identity: 6, tension: -2 }, // Tăng ít hơn
+                effect_fail_base: { Ld: -6, identity: -8, tension: 5 } // Base fail effect
+            },
 
-        const currentChallengeIndex = scores.turn - 1;
-        currentChallenge = all_challenges[currentChallengeIndex];
-        const correctPolicy = policies.find(p => p.id === currentChallenge.correct_policy);
+            {
+                id: 2, zone: 'Đồng bằng Sông Hồng (Nam Định)', difficulty: 2,
+                text: "Giáo xứ X (Công giáo) đã được cấp phép muốn mở rộng khuôn viên để xây nhà Mục vụ do số giáo dân tăng. Tuy nhiên, họ bị vướng mắc vì giá đền bù giải tỏa hành lang an toàn giao thông chưa thỏa đáng, gây khiếu nại kéo dài.",
+                correct_policy: 'policy_02',
+                effect_success: { Ld: 4, development: 2, tension: -4 },
+                effect_fail_base: { Ld: -8, tension: 7 }
+            },
+
+            {
+                id: 3, zone: 'Tây Nguyên (Đắk Lắk)', difficulty: 3,
+                text: "50 hộ dân Ê-Đê tố cáo 3 cán bộ tín dụng và địa chính đã 'ăn chặn' vốn vay ưu đãi (50 triệu/hộ) phát triển cây công nghiệp. Vụ việc đang gây bức xúc lớn, đe dọa lòng tin vào chính sách xóa đói giảm nghèo của tỉnh.",
+                correct_policy: 'policy_03',
+                effect_success: { Ld: 5, development: 3, tension: -5 },
+                effect_fail_base: { Ld: -10, tension: 9, development: -2 }
+            },
+
+            {
+                id: 4, zone: 'Miền Trung (Quảng Trị)', difficulty: 4,
+                text: "Tà đạo 'Phúc Lạc' lan truyền trong vùng sâu, khuyến khích tín đồ không tiêm phòng cho con cái và không dùng thuốc Tây. Tình hình dịch bệnh gia tăng, và người dân bị buộc đóng 'lễ vật' tốn kém. Cần can thiệp gấp.",
+                correct_policy: 'policy_04',
+                effect_success: { tension: -6, Ld: 4 },
+                effect_fail_base: { Ld: -8, tension: 10 }
+            },
+
+            {
+                id: 5, zone: 'Vùng nông thôn Bắc Bộ (Bắc Giang)', difficulty: 5,
+                text: "Khảo sát cho thấy nhiều thanh thiếu niên bỏ học sớm để đi làm xa, khiến mối liên kết giữa cha mẹ và con cái suy yếu, gia tăng bạo lực gia đình và ly hôn. Chính quyền địa phương muốn phục hồi giá trị 'Gia đình văn hóa mới XHCN'.",
+                correct_policy: 'policy_05',
+                effect_success: { identity: 5, Ld: 4, tension: -3 },
+                effect_fail_base: { identity: -8, Ld: -5, tension: 6 }
+            },
+
+            {
+                id: 6, zone: 'Miền Trung (Quảng Nam)', difficulty: 6,
+                text: "Phụ nữ trong các làng nghề truyền thống ít được tham gia quản lý hợp tác xã, dù chiếm hơn 60% lao động. Nhiều ý kiến đề xuất có chính sách nâng cao vai trò phụ nữ và bình đẳng giới trong phát triển kinh tế hộ gia đình.",
+                correct_policy: 'policy_06',
+                effect_success: { development: 4, Ld: 5, tension: -4 },
+                effect_fail_base: { Ld: -8, development: -3, tension: 6 }
+            },
+
+            {
+                id: 7, zone: 'Tây Nguyên (Kon Tum)', difficulty: 7,
+                text: "Một số vùng dân tộc thiểu số xuất hiện trào lưu thanh niên bỏ quê lên thành phố làm thuê, để lại trẻ em và người già không được chăm sóc. Chính quyền cần biện pháp ổn định kinh tế hộ và giữ gìn nếp sống gia đình truyền thống.",
+                correct_policy: 'policy_07',
+                effect_success: { Ld: 6, development: 3, tension: -5 },
+                effect_fail_base: { Ld: -9, tension: 7 }
+            },
+
+            {
+                id: 8, zone: 'Đô thị lớn (Hà Nội)', difficulty: 8,
+                text: "Sự bùng nổ công nghệ và mạng xã hội khiến nhiều gia đình mất gắn kết, trẻ em lệ thuộc vào Internet, xa rời giáo dục đạo đức truyền thống. Cần một chương trình xây dựng 'Gia đình số – Văn hóa số XHCN' phù hợp thời đại.",
+                correct_policy: 'policy_08',
+                effect_success: { Ld: 5, identity: 4, tension: -4 },
+                effect_fail_base: { Ld: -8, identity: -6, tension: 6 }
+            },
+
+            {
+                id: 9, zone: 'Tây Bắc (Điện Biên)', difficulty: 9,
+                text: "Nhóm người Mông bị tổ chức 'Giê Sùa' lôi kéo tuyên truyền về việc ly khai. Nhóm này vũ trang, chiếm giữ một đồn nhỏ của Biên phòng. Cần xử lý khẩn cấp để không tạo tiền lệ xấu và không gây đổ máu.",
+                correct_policy: 'policy_09',
+                effect_success: { Ld: 8, tension: -8, identity: 2 },
+                effect_fail_base: { Ld: -15, tension: 15 }
+            },
+
+            {
+                id: 10, zone: 'Miền Trung (Khu kinh tế ven biển)', difficulty: 10,
+                text: "Dự án Khu kinh tế quốc gia (3000ha) phải thu hồi đất của 500 hộ dân tộc Chăm, bao gồm việc di dời 3 thánh đường Hồi giáo và hàng loạt nghĩa địa. Người dân phản đối, cho rằng việc di dời làm tổn thương tinh thần tôn giáo và bản sắc.",
+                correct_policy: 'policy_10',
+                effect_success: { development: 7, Ld: 6, tension: -7, identity: 1 },
+                effect_fail_base: { development: -5, Ld: -14, tension: 18 }
+            }
+        ];
+
+        // --- 10 CHÍNH SÁCH CỤ THỂ TƯƠNG ỨNG ---
+        const policies = [
+            { id: 'policy_01', name: 'Đồng tài trợ & Kiểm soát chất lượng', desc: 'Nhà nước chia sẻ 70% kinh phí, nhưng thiết lập Ban Giám sát (Cơ quan Văn hóa & Nghệ nhân) để đảm bảo chất lượng, chống thương mại hóa.', hover_impact: 'Lòng Dân ▲▲, Bản Sắc ▲▲▲, Căng Thẳng ▼' },
+            { id: 'policy_02', name: 'Tổ công tác ưu tiên tháo gỡ', desc: 'Thành lập Tổ công tác liên ngành đặc biệt để ưu tiên xử lý hồ sơ, áp dụng khung giá đền bù cao nhất và đề xuất phương án hoán đổi đất hợp lý.', hover_impact: 'Lòng Dân ▲▲▲, Phát Triển ▲, Căng Thẳng ▼▼' },
+            { id: 'policy_03', name: 'Thanh tra đột xuất & Khởi tố', desc: 'Khởi tố và xử lý hình sự cán bộ tham nhũng; tổ chức thanh tra đột xuất và tái cơ cấu ban quản lý vốn vay để trả lại quyền lợi cho người dân.', hover_impact: 'Lòng Dân ▲▲▲, Phát Triển ▲, Căng Thẳng ▼▼' },
+            { id: 'policy_04', name: 'Liên ngành Y tế - An ninh', desc: 'Xử lý nghiêm đối tượng cầm đầu theo pháp luật; phối hợp Y tế và chức sắc tôn giáo chính thống tuyên truyền khoa học về y tế và đấu tranh với mê tín dị đoan.', hover_impact: 'Căng Thẳng ▼▼▼, Lòng Dân ▲▲' },
+            {
+                id: 'policy_05', name: 'Chương trình Gia đình Văn hóa XHCN',
+                desc: 'Phát động phong trào “Gia đình văn hóa – Hạnh phúc – Bình đẳng” với trọng tâm giáo dục đạo đức, phòng chống bạo lực và khôi phục các giá trị truyền thống trong đời sống hiện đại.',
+                hover_impact: 'Bản Sắc ▲▲, Lòng Dân ▲▲, Căng Thẳng ▼'
+            },
+            {
+                id: 'policy_06', name: 'Chiến lược Bình đẳng giới trong Kinh tế hộ gia đình',
+                desc: 'Đưa tiêu chí bình đẳng giới vào xếp hạng Hợp tác xã; ưu tiên tín dụng và đào tạo lãnh đạo cho phụ nữ, khẳng định vai trò “người giữ lửa” trong phát triển kinh tế – xã hội XHCN.',
+                hover_impact: 'Phát Triển ▲▲, Lòng Dân ▲▲, Căng Thẳng ▼'
+            },
+            {
+                id: 'policy_07', name: 'Chính sách Hỗ trợ Lao động Trở về Quê',
+                desc: 'Tạo việc làm tại chỗ, mở lớp dạy nghề cho thanh niên nông thôn; hỗ trợ kinh tế hộ gia đình nhằm gắn kết thế hệ và ổn định cấu trúc gia đình vùng dân tộc thiểu số.',
+                hover_impact: 'Lòng Dân ▲▲▲, Phát Triển ▲, Căng Thẳng ▼▼'
+            },
+            {
+                id: 'policy_08', name: 'Đề án Gia đình số – Văn hóa số XHCN',
+                desc: 'Tổ chức chiến dịch truyền thông và hướng dẫn “Gia đình 4.0” – ứng dụng công nghệ vào gắn kết, giáo dục con cái, và lan tỏa lối sống XHCN trong không gian mạng.',
+                hover_impact: 'Lòng Dân ▲▲, Bản Sắc ▲▲, Căng Thẳng ▼'
+            }, { id: 'policy_09', name: 'Lồng ghép An ninh - An sinh xã hội', desc: 'Thực hiện chính sách an sinh xã hội khẩn cấp (nhà ở, việc làm) để tách đối tượng bị lôi kéo ra khỏi đối tượng cầm đầu; đồng thời sử dụng lực lượng An ninh đấu tranh pháp lý kiên quyết.', hover_impact: 'Lòng Dân ▲▲▲, Căng Thẳng ▼▼▼' },
+            { id: 'policy_10', name: 'Minh bạch Quy trình Tái định cư Nhân văn', desc: 'Công khai toàn bộ quy trình; áp dụng chính sách đền bù cao nhất; xây dựng khu tái định cư mới gần gũi với phong tục Chăm, đảm bảo sinh kế tốt hơn nơi cũ.', hover_impact: 'Phát Triển ▲▲▲, Lòng Dân ▲▲▲, Căng Thẳng ▼▼▼' }
+        ];
 
 
-        // Cập nhật giao diện
-        document.getElementById('current-zone-display').textContent = `Đang điều hành tại Vùng ${currentChallenge.zone}`;
-        document.getElementById('challenge-area').innerHTML = `
+        function updateScores() {
+            document.getElementById('turn-count-subtitle').textContent = `${scores.turn}/${MAX_TURNS}`;
+            document.getElementById('ld-score').textContent = scores.Ld;
+            document.getElementById('identity-score').textContent = scores.identity;
+            document.getElementById('development-score').textContent = scores.development;
+            document.getElementById('tension-score').textContent = scores.tension;
+
+            // Cập nhật Cảnh báo Áp lực
+            const alertBox = document.getElementById('tension-alert');
+            if (scores.tension >= 70) {
+                alertBox.style.display = 'block';
+                alertBox.style.backgroundColor = '#8c0000'; // Đỏ rất đậm (Nguy hiểm)
+                alertBox.textContent = "🔥🔥 KHỦNG HOẢNG LÒNG TIN VÀ AN NINH TRẬT TỰ! 🔥🔥";
+            } else if (scores.tension >= 50) {
+                alertBox.style.display = 'block';
+                alertBox.style.backgroundColor = '#d32f2f'; // Đỏ
+                alertBox.textContent = "🔥 TÌNH HÌNH NỘI BỘ ĐANG CĂNG THẲNG CỰC ĐỘ! 🔥";
+            } else if (scores.tension >= 30) {
+                alertBox.style.display = 'block';
+                alertBox.style.backgroundColor = '#ff9800'; // Cam
+                alertBox.textContent = "⚠️ Cảnh báo: Áp lực xã hội đang gia tăng nhanh chóng.";
+            } else {
+                alertBox.style.display = 'none';
+            }
+        }
+
+        function startTurn() {
+            if (scores.turn > MAX_TURNS) {
+                displayFinalResult();
+                return;
+            }
+
+            scores.canAct = true;
+
+            // Áp lực xã hội tăng 2 điểm mỗi lượt (Tăng độ khó)
+            scores.tension += 2;
+
+            const currentChallengeIndex = scores.turn - 1;
+            currentChallenge = all_challenges[currentChallengeIndex];
+            const correctPolicy = policies.find(p => p.id === currentChallenge.correct_policy);
+
+
+            // Cập nhật giao diện
+            document.getElementById('current-zone-display').textContent = `Đang điều hành tại Vùng ${currentChallenge.zone}`;
+            document.getElementById('challenge-area').innerHTML = `
             <div class="challenge-box" id="current-challenge-box">
                 <span class="difficulty-tag">Độ Khó: ${currentChallenge.difficulty}/10</span>
                 <h4>⚠️ Vấn đề Phát sinh (Lượt ${scores.turn})</h4>
@@ -587,171 +777,172 @@
             </div>
         `;
 
-        feedbackModal.style.display = 'none'; // Đảm bảo Modal đóng
-        document.getElementById('policy-buttons').classList.remove('disabled');
+            feedbackModal.style.display = 'none'; // Đảm bảo Modal đóng
+            document.getElementById('policy-buttons').classList.remove('disabled');
 
-        // Cập nhật danh sách chính sách cho lượt hiện tại
-        updatePolicyButtons(correctPolicy);
+            // Cập nhật danh sách chính sách cho lượt hiện tại
+            updatePolicyButtons(correctPolicy);
 
-        updateScores();
-    }
+            updateScores();
+        }
 
-    function updatePolicyButtons(correctPolicy) {
-        const policyButtonsContainer = document.querySelector('.policy-options');
-        let policyHTML = '';
+        function updatePolicyButtons(correctPolicy) {
+            const policyButtonsContainer = document.querySelector('.policy-options');
+            let policyHTML = '';
 
-        // Tối ưu hóa Logic Trộn Chính sách (Đảm bảo 1 đúng, 2 phụ, 7 sai)
-        const allPolicyIds = policies.map(p => p.id);
+            // Tối ưu hóa Logic Trộn Chính sách (Đảm bảo 1 đúng, 2 phụ, 7 sai)
+            const allPolicyIds = policies.map(p => p.id);
 
-        // 1. Lọc ra các chính sách SAI (trừ chính sách đúng)
-        const wrongPolicyIds = allPolicyIds.filter(id => id !== correctPolicy.id);
+            // 1. Lọc ra các chính sách SAI (trừ chính sách đúng)
+            const wrongPolicyIds = allPolicyIds.filter(id => id !== correctPolicy.id);
 
-        // 2. Chọn 7 chính sách sai ngẫu nhiên
-        const randomWrongPolicies = wrongPolicyIds
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 7)
-            .map(id => policies.find(p => p.id === id));
+            // 2. Chọn 7 chính sách sai ngẫu nhiên
+            const randomWrongPolicies = wrongPolicyIds
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 7)
+                .map(id => policies.find(p => p.id === id));
 
-        // 3. Tạo danh sách 10 chính sách (1 đúng + 2 phụ + 7 sai)
-        let currentTurnPolicies = [correctPolicy, ...randomWrongPolicies, ...utilityPolicies];
-        currentTurnPolicies.sort(() => 0.5 - Math.random()); // Xáo trộn cuối cùng
+            // 3. Tạo danh sách 10 chính sách (1 đúng + 2 phụ + 7 sai)
+            let currentTurnPolicies = [correctPolicy, ...randomWrongPolicies, ...utilityPolicies];
+            currentTurnPolicies.sort(() => 0.5 - Math.random()); // Xáo trộn cuối cùng
 
-        currentTurnPolicies.forEach(policy => {
-            policyHTML += `
+            currentTurnPolicies.forEach(policy => {
+                policyHTML += `
                 <div class="policy-card" onclick="handleDecision('${policy.id}')">
                     <h5>${policy.name}</h5>
                     <p>${policy.desc}</p>
                     <div class="tooltip">${policy.hover_impact || 'Dự kiến: Lòng Dân ?, Căng Thẳng ?'}</div>
                 </div>
             `;
-        });
+            });
 
-        policyButtonsContainer.innerHTML = policyHTML;
-    }
-
-    function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth' // smooth scrolling effect
-        });
-    }
-
-
-    function handleDecision(selectedPolicyId) {
-        if (!currentChallenge || !scores.canAct || scores.turn > MAX_TURNS) return;
-
-        scores.canAct = false;
-        scrollToTop();
-        const isCorrect = selectedPolicyId === currentChallenge.correct_policy;
-        let feedbackHTML = '';
-        let effects;
-
-        // Gộp tất cả chính sách để tìm tên
-        const allPolicies = [...policies, ...utilityPolicies];
-        const selectedPolicy = allPolicies.find(p => p.id === selectedPolicyId);
-
-        if (isCorrect) {
-            effects = currentChallenge.effect_success;
-        } else if (selectedPolicyId === 'policy_hoan') {
-            // Tác động Hoãn: Giảm Lòng Dân (-5), Tăng Căng Thẳng (10)
-            effects = { tension: 10, Ld: -5 };
-        } else if (selectedPolicyId === 'policy_luc') {
-            // Tác động Lực Lượng: Giảm Lòng Dân (-12), Giảm Căng Thẳng (-5)
-            effects = { tension: -5, Ld: -12, identity: -4 };
-        } else {
-            // Hiệu ứng thất bại
-            effects = currentChallenge.effect_fail_base;
+            policyButtonsContainer.innerHTML = policyHTML;
         }
 
-        // Tạo thông báo chi tiết
-        const detailEffects = [
-            effects.Ld ? `Lòng Dân ${effects.Ld > 0 ? '➕' : '➖'}${Math.abs(effects.Ld)}` : '',
-            effects.identity ? `Bản Sắc ${effects.identity > 0 ? '➕' : '➖'}${Math.abs(effects.identity)}` : '',
-            effects.development ? `Phát Triển ${effects.development > 0 ? '➕' : '➖'}${Math.abs(effects.development)}` : '',
-            effects.tension ? `Căng Thẳng ${effects.tension > 0 ? '➕' : '➖'}${Math.abs(effects.tension)}` : '',
-        ].filter(e => e).join('; ');
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // smooth scrolling effect
+            });
+        }
 
-        // Logic Feedback
-        if (isCorrect) {
-            feedbackHTML = `<div class="feedback-box positive">
+
+        function handleDecision(selectedPolicyId) {
+            if (!currentChallenge || !scores.canAct || scores.turn > MAX_TURNS) return;
+
+            scores.canAct = false;
+            scrollToTop();
+            const isCorrect = selectedPolicyId === currentChallenge.correct_policy;
+            let feedbackHTML = '';
+            let effects;
+
+            // Gộp tất cả chính sách để tìm tên
+            const allPolicies = [...policies, ...utilityPolicies];
+            const selectedPolicy = allPolicies.find(p => p.id === selectedPolicyId);
+
+            if (isCorrect) {
+                effects = currentChallenge.effect_success;
+            } else if (selectedPolicyId === 'policy_hoan') {
+                // Tác động Hoãn: Giảm Lòng Dân (-5), Tăng Căng Thẳng (10)
+                effects = { tension: 10, Ld: -5 };
+            } else if (selectedPolicyId === 'policy_luc') {
+                // Tác động Lực Lượng: Giảm Lòng Dân (-12), Giảm Căng Thẳng (-5)
+                effects = { tension: -5, Ld: -12, identity: -4 };
+            } else {
+                // Hiệu ứng thất bại
+                effects = currentChallenge.effect_fail_base;
+                effects.development = (effects.development || 0) - 3;
+            }
+
+            // Tạo thông báo chi tiết
+            const detailEffects = [
+                effects.Ld ? `Lòng Dân ${effects.Ld > 0 ? '➕' : '➖'}${Math.abs(effects.Ld)}` : '',
+                effects.identity ? `Bản Sắc ${effects.identity > 0 ? '➕' : '➖'}${Math.abs(effects.identity)}` : '',
+                effects.development ? `Phát Triển ${effects.development > 0 ? '➕' : '➖'}${Math.abs(effects.development)}` : '',
+                effects.tension ? `Căng Thẳng ${effects.tension > 0 ? '➕' : '➖'}${Math.abs(effects.tension)}` : '',
+            ].filter(e => e).join('; ');
+
+            // Logic Feedback
+            if (isCorrect) {
+                feedbackHTML = `<div class="feedback-box positive">
                 <h2>✅ QUYẾT ĐỊNH XUẤT SẮC!</h2>
                 <p>Chính sách **"${selectedPolicy.name}"** là Tối ưu và Chính xác.</p>
                 <div class="impact">Tác động: ${detailEffects}</div>
                 <strong>Lý giải theo CNXH:</strong> ${correct_explanations[selectedPolicyId]}
             </div>`;
-        } else if (selectedPolicyId === 'policy_hoan') {
-            feedbackHTML = `<div class="feedback-box negative">
+            } else if (selectedPolicyId === 'policy_hoan') {
+                feedbackHTML = `<div class="feedback-box negative">
                 <h2>❌ QUYẾT ĐỊNH BỊ ĐÌNH TRỆ!</h2>
                 <p>Hoãn không phải là giải pháp, vấn đề trở nên phức tạp hơn.</p>
                 <div class="impact">Tác động: ${detailEffects}</div>
                 <strong>Lý giải theo CNXH:</strong> Tình hình nội bộ không cho phép trì hoãn. Thiếu quyết đoán làm mất lòng tin và tăng áp lực xã hội.
             </div>`;
-        } else if (selectedPolicyId === 'policy_luc') {
-            feedbackHTML = `<div class="feedback-box negative">
+            } else if (selectedPolicyId === 'policy_luc') {
+                feedbackHTML = `<div class="feedback-box negative">
                 <h2>❌ BIỆN PHÁP QUÁ MẠNH! </h2>
                 <p>Mặc dù giảm căng thẳng, nhưng hành động này gây tổn thương lớn đến Lòng Dân và Bản Sắc.</p>
                 <div class="impact">Tác động: ${detailEffects}</div>
                 <strong>Lý giải theo CNXH:</strong> Giải quyết mâu thuẫn cần kết hợp biện pháp hành chính với dân vận, kinh tế. Chỉ dùng vũ lực là đi ngược lại nguyên tắc Nhà nước của dân.
             </div>`;
-        } else {
-            feedbackHTML = `<div class="feedback-box negative">
+            } else {
+                feedbackHTML = `<div class="feedback-box negative">
                 <h2>❌ QUYẾT ĐỊNH CHƯA TỐI ƯU!</h2>
                 <p>Chính sách **"${selectedPolicy.name}"** không phù hợp, làm tình hình trầm trọng thêm.</p>
                 <div class="impact">Tác động: ${detailEffects}</div>
                 <strong>Lý giải theo CNXH:</strong> Quyết định này không giải quyết gốc rễ mâu thuẫn giai cấp, kinh tế hoặc tinh thần, khiến đối tượng phản ứng tiêu cực.
             </div>`;
+            }
+
+            // Cập nhật điểm
+            scores.Ld += effects.Ld || 0;
+            scores.identity += effects.identity || 0;
+            scores.development += effects.development || 0;
+            scores.tension += effects.tension || 0;
+
+            // Giới hạn điểm (0-100)
+            scores.Ld = Math.max(0, Math.min(100, scores.Ld));
+            scores.identity = Math.max(0, Math.min(100, scores.identity));
+            scores.development = Math.max(0, Math.min(100, scores.development));
+            scores.tension = Math.max(0, scores.tension);
+
+            // Hiển thị Modal/Popup
+            modalContent.innerHTML = feedbackHTML;
+            feedbackModal.style.display = 'block';
+
+            document.getElementById('policy-buttons').classList.add('disabled');
+            currentChallenge = null;
+            updateScores();
         }
 
-        // Cập nhật điểm
-        scores.Ld += effects.Ld || 0;
-        scores.identity += effects.identity || 0;
-        scores.development += effects.development || 0;
-        scores.tension += effects.tension || 0;
+        function nextTurn() {
+            feedbackModal.style.display = 'none'; // Đóng Modal
 
-        // Giới hạn điểm (0-100)
-        scores.Ld = Math.max(0, Math.min(100, scores.Ld));
-        scores.identity = Math.max(0, Math.min(100, scores.identity));
-        scores.development = Math.max(0, Math.min(100, scores.development));
-        scores.tension = Math.max(0, scores.tension);
-
-        // Hiển thị Modal/Popup
-        modalContent.innerHTML = feedbackHTML;
-        feedbackModal.style.display = 'block';
-
-        document.getElementById('policy-buttons').classList.add('disabled');
-        currentChallenge = null;
-        updateScores();
-    }
-
-    function nextTurn() {
-        feedbackModal.style.display = 'none'; // Đóng Modal
-
-        scores.turn++;
-        if (scores.turn > MAX_TURNS) {
-            document.getElementById('game-map').style.display = 'none';
-            displayFinalResult();
-            scores.turn--;
-        } else {
-            startTurn();
-        }
-    }
-
-    function displayFinalResult() {
-        let finalMessage = "🏆 **KẾT THÚC HÀNH TRÌNH KIẾN TẠO!** ";
-        let grade;
-
-        if (scores.Ld >= 85 && scores.identity >= 65 && scores.tension <= 25) {
-            grade = "TUYỆT VỜI (A+)";
-            finalMessage += "Bạn đã hoàn thành xuất sắc nhiệm vụ Kiến tạo. Xã hội đạt mức hòa hợp cao, phát triển toàn diện, Lòng Dân vững chắc!";
-        } else if (scores.Ld >= 70 && scores.tension <= 40) {
-            grade = "ĐẠT YÊU CẦU (B)";
-            finalMessage += "Bạn đã quản lý tốt. Tuy nhiên, một vài quyết định chưa tối ưu đã làm giảm đà phát triển và Lòng Dân.";
-        } else {
-            grade = "CẦN CẢI THIỆN (C)";
-            finalMessage += "Mức độ căng thẳng xã hội cao và Lòng Dân giảm mạnh. Cần xem xét lại các nguyên tắc chính sách cơ bản!";
+            scores.turn++;
+            if (scores.turn > MAX_TURNS) {
+                document.getElementById('game-map').style.display = 'none';
+                scores.turn--;
+                displayFinalResult();
+            } else {
+                startTurn();
+            }
         }
 
-        document.getElementById('challenge-area').innerHTML = `
+        function displayFinalResult() {
+            let finalMessage = "🏆 **KẾT THÚC HÀNH TRÌNH KIẾN TẠO!** ";
+            let grade;
+
+            if (scores.Ld >= 85 && scores.identity >= 65 && scores.tension <= 25) {
+                grade = "TUYỆT VỜI (A+)";
+                finalMessage += "Bạn đã hoàn thành xuất sắc nhiệm vụ Kiến tạo. Xã hội đạt mức hòa hợp cao, phát triển toàn diện, Lòng Dân vững chắc!";
+            } else if (scores.Ld >= 70 && scores.tension <= 40) {
+                grade = "ĐẠT YÊU CẦU (B)";
+                finalMessage += "Bạn đã quản lý tốt. Tuy nhiên, một vài quyết định chưa tối ưu đã làm giảm đà phát triển và Lòng Dân.";
+            } else {
+                grade = "CẦN CẢI THIỆN (C)";
+                finalMessage += "Mức độ căng thẳng xã hội cao và Lòng Dân giảm mạnh. Cần xem xét lại các nguyên tắc chính sách cơ bản!";
+            }
+
+            document.getElementById('challenge-area').innerHTML = `
             <div class="final-result">
                 <h4>KẾT QUẢ CUỐI CÙNG: ${grade}</h4>
                 <p>${finalMessage}</p>
@@ -760,41 +951,68 @@
                 <p>Bản sắc Văn hóa: **${scores.identity}**</p>
                 <p>Phát triển Hạ tầng: **${scores.development}**</p>
                 <p>Căng Thẳng Xã Hội: **${scores.tension}**</p>
+                <hr style="margin-top: 20px;">              
+                <button class="modal-next-btn" onclick="restartGame()" style="background-color: #2196f3; font-size: 1.2em;">
+                    CHƠI LẠI TỪ ĐẦU 🔄
+                </button>
             </div>
         `;
-        document.getElementById('policy-buttons').style.display = 'none';
-        document.getElementById('control-panel').style.display = 'none';
-        document.getElementById('tension-alert').style.display = 'none';
-        feedbackModal.style.display = 'none'; // Đóng Modal lần cuối
-        updateScores();
-    }
-
-    // --- Khởi tạo Giao diện Chính sách và Trò chơi ---
-    function initializeGame() {
-        window.policy_names = policies.reduce((acc, policy) => {
-            acc[policy.id] = policy.name;
-            return acc;
-        }, {});
-
-        // Thử phát nhạc lần đầu
-        const playPromise = music.play();
-
-        // Xử lý lỗi Autoplay nếu trình duyệt chặn
-        if (playPromise !== undefined) {
-            playPromise.then(_ => {
-                // Autoplay thành công
-                musicBtn.textContent = '🔇 Tắt Nhạc Nền';
-            }).catch(error => {
-                // Autoplay bị chặn, chờ người dùng tương tác
-                musicBtn.textContent = '🔊 Bật Nhạc Nền';
-            });
+            document.getElementById('policy-buttons').style.display = 'none';
+            document.getElementById('control-panel').style.display = 'none';
+            document.getElementById('tension-alert').style.display = 'none';
+            feedbackModal.style.display = 'none'; // Đóng Modal lần cuối
+            updateScores();
         }
 
-        startTurn();
-    }
+        function restartGame() {
+            // Reset tất cả chỉ số về trạng thái ban đầu
+            scores = {
+                Ld: 70,
+                identity: 70,
+                development: 50,
+                tension: 10,
+                turn: 1,
+                canAct: true
+            };
 
-    initializeGame();
-</script>
+            // Hiện lại các khu vực bị ẩn khi kết thúc
+            document.getElementById('game-map').style.display = 'block';
+            document.getElementById('policy-buttons').style.display = 'block';
+            document.getElementById('control-panel').style.display = 'flex';
+            document.getElementById('tension-alert').style.display = 'none';
+
+            // Dọn dẹp kết quả cuối cùng
+            document.getElementById('challenge-area').innerHTML = '';
+
+            // Bắt đầu lại trò chơi (sẽ hiển thị Modal Welcome)
+            initializeGame();
+        }
+
+        function startGameModal() {
+            document.getElementById('welcome-modal').style.display = 'none';
+            music.play();
+            startTurn(); // Bắt đầu lượt đầu tiên sau khi đóng popup
+        }
+
+        // --- Khởi tạo Giao diện Chính sách và Trò chơi ---
+        function initializeGame() {
+            window.policy_names = policies.reduce((acc, policy) => {
+                acc[policy.id] = policy.name;
+                return acc;
+            }, {});
+
+            // Thử phát nhạc lần đầu
+            const playPromise = music.play();
+
+            // Bật Modal Welcome
+            document.getElementById('welcome-modal').style.display = 'flex'; // Sử dụng 'flex'
+
+            // Đảm bảo Modal Feedback ẩn
+            feedbackModal.style.display = 'none';
+        }
+
+        initializeGame();
+    </script>
 
 </body>
 
