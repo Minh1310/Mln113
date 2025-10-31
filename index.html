@@ -327,7 +327,7 @@
 
     <audio id="background-music" loop autoplay>
                
-        <source src="your_epic_background_music.mp3" type="audio/mpeg">
+        <source src="game_music.mp3" type="audio/mpeg">
             Trình duyệt của bạn không hỗ trợ thẻ audio. (Bạn cần thay thế bằng file nhạc thực tế)
     </audio>
 
@@ -367,7 +367,8 @@
                         </div>
                 </div>
 
-            <div id="control-panel">
+            <div id="control-panel"
+            style="position: fixed; top: 0; bottom: 0; margin: 20px; height: fit-content ! important;">
                     <button id="music-control-btn" onclick="toggleMusic()">🔊 Bật Nhạc Nền</button>
                         </div>
     </div>
@@ -467,35 +468,35 @@
             },
 
             {
-                id: 5, zone: 'Vùng biên giới (Hà Giang)', difficulty: 5,
-                text: "Thống kê cho thấy chỉ 10% trẻ em Lô Lô dưới 18 tuổi còn nói được tiếng mẹ đẻ. Các gia đình trẻ chủ yếu dùng tiếng phổ thông do đi làm ăn xa. Nguy cơ mất ngôn ngữ dân tộc là rõ rệt trong 10 năm tới.",
+                id: 5, zone: 'Vùng nông thôn Bắc Bộ (Bắc Giang)', difficulty: 5,
+                text: "Khảo sát cho thấy nhiều thanh thiếu niên bỏ học sớm để đi làm xa, khiến mối liên kết giữa cha mẹ và con cái suy yếu, gia tăng bạo lực gia đình và ly hôn. Chính quyền địa phương muốn phục hồi giá trị 'Gia đình văn hóa mới XHCN'.",
                 correct_policy: 'policy_05',
-                effect_success: { identity: 6, Ld: 3, tension: -2 },
-                effect_fail_base: { identity: -10, Ld: -4, tension: 4 }
+                effect_success: { identity: 5, Ld: 4, tension: -3 },
+                effect_fail_base: { identity: -8, Ld: -5, tension: 6 }
             },
 
             {
-                id: 6, zone: 'Tây Nguyên (Gia Lai)', difficulty: 6,
-                text: "Tranh chấp giữa Công ty Cao su X và 100 hộ dân Gia Rai liên quan đến 500ha đất. Công ty có sổ đỏ, nhưng người dân khẳng định đây là đất canh tác truyền thống. Các đối tượng chống phá đang lợi dụng mạng xã hội để kích động người dân biểu tình.",
+                id: 6, zone: 'Miền Trung (Quảng Nam)', difficulty: 6,
+                text: "Phụ nữ trong các làng nghề truyền thống ít được tham gia quản lý hợp tác xã, dù chiếm hơn 60% lao động. Nhiều ý kiến đề xuất có chính sách nâng cao vai trò phụ nữ và bình đẳng giới trong phát triển kinh tế hộ gia đình.",
                 correct_policy: 'policy_06',
-                effect_success: { Ld: 6, tension: -7, development: 4 },
-                effect_fail_base: { Ld: -12, tension: 12 }
+                effect_success: { development: 4, Ld: 5, tension: -4 },
+                effect_fail_base: { Ld: -8, development: -3, tension: 6 }
             },
 
             {
-                id: 7, zone: 'Miền Nam (TP.HCM)', difficulty: 7,
-                text: "Một tổ chức phi chính phủ nước ngoài đưa tin xuyên tạc về việc chính quyền 'đàn áp' 5 điểm nhóm Tin Lành H'Mông. Họ đang vận động quốc hội một nước lớn cắt giảm viện trợ cho Việt Nam.",
+                id: 7, zone: 'Tây Nguyên (Kon Tum)', difficulty: 7,
+                text: "Một số vùng dân tộc thiểu số xuất hiện trào lưu thanh niên bỏ quê lên thành phố làm thuê, để lại trẻ em và người già không được chăm sóc. Chính quyền cần biện pháp ổn định kinh tế hộ và giữ gìn nếp sống gia đình truyền thống.",
                 correct_policy: 'policy_07',
-                effect_success: { Ld: 7, tension: -6 },
-                effect_fail_base: { Ld: -10, tension: 8 }
+                effect_success: { Ld: 6, development: 3, tension: -5 },
+                effect_fail_base: { Ld: -9, tension: 7 }
             },
 
             {
-                id: 8, zone: 'Miền Bắc (Hà Nội)', difficulty: 8,
-                text: "Chùa Cổ A (Di tích cấp Quốc gia) xuống cấp. Ban Trị sự Phật giáo muốn tự huy động công đức để tu bổ. Chính quyền lo ngại họ sẽ làm sai lệch cấu trúc cổ, nhưng nếu không tu bổ thì Chùa sẽ bị sập.",
+                id: 8, zone: 'Đô thị lớn (Hà Nội)', difficulty: 8,
+                text: "Sự bùng nổ công nghệ và mạng xã hội khiến nhiều gia đình mất gắn kết, trẻ em lệ thuộc vào Internet, xa rời giáo dục đạo đức truyền thống. Cần một chương trình xây dựng 'Gia đình số – Văn hóa số XHCN' phù hợp thời đại.",
                 correct_policy: 'policy_08',
                 effect_success: { Ld: 5, identity: 4, tension: -4 },
-                effect_fail_base: { Ld: -9, identity: -6, tension: 6 }
+                effect_fail_base: { Ld: -8, identity: -6, tension: 6 }
             },
 
             {
@@ -521,11 +522,26 @@
             { id: 'policy_02', name: 'Tổ công tác ưu tiên tháo gỡ', desc: 'Thành lập Tổ công tác liên ngành đặc biệt để ưu tiên xử lý hồ sơ, áp dụng khung giá đền bù cao nhất và đề xuất phương án hoán đổi đất hợp lý.', hover_impact: 'Lòng Dân ▲▲▲, Phát Triển ▲, Căng Thẳng ▼▼' },
             { id: 'policy_03', name: 'Thanh tra đột xuất & Khởi tố', desc: 'Khởi tố và xử lý hình sự cán bộ tham nhũng; tổ chức thanh tra đột xuất và tái cơ cấu ban quản lý vốn vay để trả lại quyền lợi cho người dân.', hover_impact: 'Lòng Dân ▲▲▲, Phát Triển ▲, Căng Thẳng ▼▼' },
             { id: 'policy_04', name: 'Liên ngành Y tế - An ninh', desc: 'Xử lý nghiêm đối tượng cầm đầu theo pháp luật; phối hợp Y tế và chức sắc tôn giáo chính thống tuyên truyền khoa học về y tế và đấu tranh với mê tín dị đoan.', hover_impact: 'Căng Thẳng ▼▼▼, Lòng Dân ▲▲' },
-            { id: 'policy_05', name: 'Chương trình Giáo dục Song ngữ Đa phương tiện', desc: 'Đưa chương trình giáo dục song ngữ Tày/Việt vào trường học. Xây dựng nội dung văn hóa Lô Lô trên các nền tảng số (Youtube/TikTok) để thu hút giới trẻ.', hover_impact: 'Bản Sắc ▲▲▲, Lòng Dân ▲' },
-            { id: 'policy_06', name: 'Hội đồng Đối thoại Đa chiều', desc: 'Thành lập Hội đồng đối thoại (Chính quyền, Doanh nghiệp, Dân tộc), mời luật sư độc lập tham gia; tiến hành đo đạc đất đai công khai, thu hồi và bồi thường thỏa đáng.', hover_impact: 'Lòng Dân ▲▲▲, Căng Thẳng ▼▼▼' },
-            { id: 'policy_07', name: 'Chiến dịch Thông tin Quốc tế chủ động', desc: 'Tổ chức họp báo quốc tế bằng 3 thứ tiếng; mời phóng viên nước ngoài đến thăm các điểm nhóm tôn giáo hợp pháp để bác bỏ tin giả và vạch trần tổ chức phản động.', hover_impact: 'Lòng Dân ▲▲▲, Căng Thẳng ▼▼' },
-            { id: 'policy_08', name: 'Cơ chế Hợp tác Tu bổ - Đồng quản lý', desc: 'Ký thỏa thuận đồng quản lý: Chính quyền giám sát kỹ thuật, tôn giáo huy động công đức và thực hiện thi công theo đúng quy chuẩn di tích lịch sử quốc gia.', hover_impact: 'Lòng Dân ▲▲, Bản Sắc ▲▲, Căng Thẳng ▼' },
-            { id: 'policy_09', name: 'Lồng ghép An ninh - An sinh xã hội', desc: 'Thực hiện chính sách an sinh xã hội khẩn cấp (nhà ở, việc làm) để tách đối tượng bị lôi kéo ra khỏi đối tượng cầm đầu; đồng thời sử dụng lực lượng An ninh đấu tranh pháp lý kiên quyết.', hover_impact: 'Lòng Dân ▲▲▲, Căng Thẳng ▼▼▼' },
+            {
+                id: 'policy_05', name: 'Chương trình Gia đình Văn hóa XHCN',
+                desc: 'Phát động phong trào “Gia đình văn hóa – Hạnh phúc – Bình đẳng” với trọng tâm giáo dục đạo đức, phòng chống bạo lực và khôi phục các giá trị truyền thống trong đời sống hiện đại.',
+                hover_impact: 'Bản Sắc ▲▲, Lòng Dân ▲▲, Căng Thẳng ▼'
+            },
+            {
+                id: 'policy_06', name: 'Chiến lược Bình đẳng giới trong Kinh tế hộ gia đình',
+                desc: 'Đưa tiêu chí bình đẳng giới vào xếp hạng Hợp tác xã; ưu tiên tín dụng và đào tạo lãnh đạo cho phụ nữ, khẳng định vai trò “người giữ lửa” trong phát triển kinh tế – xã hội XHCN.',
+                hover_impact: 'Phát Triển ▲▲, Lòng Dân ▲▲, Căng Thẳng ▼'
+            },
+            {
+                id: 'policy_07', name: 'Chính sách Hỗ trợ Lao động Trở về Quê',
+                desc: 'Tạo việc làm tại chỗ, mở lớp dạy nghề cho thanh niên nông thôn; hỗ trợ kinh tế hộ gia đình nhằm gắn kết thế hệ và ổn định cấu trúc gia đình vùng dân tộc thiểu số.',
+                hover_impact: 'Lòng Dân ▲▲▲, Phát Triển ▲, Căng Thẳng ▼▼'
+            },
+            {
+                id: 'policy_08', name: 'Đề án Gia đình số – Văn hóa số XHCN',
+                desc: 'Tổ chức chiến dịch truyền thông và hướng dẫn “Gia đình 4.0” – ứng dụng công nghệ vào gắn kết, giáo dục con cái, và lan tỏa lối sống XHCN trong không gian mạng.',
+                hover_impact: 'Lòng Dân ▲▲, Bản Sắc ▲▲, Căng Thẳng ▼'
+            }, { id: 'policy_09', name: 'Lồng ghép An ninh - An sinh xã hội', desc: 'Thực hiện chính sách an sinh xã hội khẩn cấp (nhà ở, việc làm) để tách đối tượng bị lôi kéo ra khỏi đối tượng cầm đầu; đồng thời sử dụng lực lượng An ninh đấu tranh pháp lý kiên quyết.', hover_impact: 'Lòng Dân ▲▲▲, Căng Thẳng ▼▼▼' },
             { id: 'policy_10', name: 'Minh bạch Quy trình Tái định cư Nhân văn', desc: 'Công khai toàn bộ quy trình; áp dụng chính sách đền bù cao nhất; xây dựng khu tái định cư mới gần gũi với phong tục Chăm, đảm bảo sinh kế tốt hơn nơi cũ.', hover_impact: 'Phát Triển ▲▲▲, Lòng Dân ▲▲▲, Căng Thẳng ▼▼▼' }
         ];
 
@@ -726,8 +742,8 @@
             scores.turn++;
             if (scores.turn > MAX_TURNS) {
                 document.getElementById('game-map').style.display = 'none';
-                displayFinalResult();
                 scores.turn--;
+                displayFinalResult();
             } else {
                 startTurn();
             }
